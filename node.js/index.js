@@ -113,8 +113,10 @@ function parse(data) {
     data = data.slice(toread);
 
     this._parser.lenArr.push(buf);
-    this._parser.len = Buffer.concat(this._parser.lenArr, 4).readUInt32LE(0);
-    this._parser.lenArr = [];
+    if (this._parser.lenArr.length > 1)
+      this._parser.len = Buffer.concat(this._parser.lenArr, 4).readUInt32LE(0);
+    else
+      this._parser.len = buf.readUInt32LE(0);
     this._parser.state = PARSER_WAITING_DATA;
   }
 
