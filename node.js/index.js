@@ -24,9 +24,9 @@ Framer.prototype._reset = function () {
     state: PARSER_WAITING_DATA_LEN,
     len: null, // UInt32LE
     lenArr: [],
-    lenReaded: 0,
+    lenRead: 0,
     dataArr: [],
-    dataReaded: 0
+    dataRead: 0
   };
 };
 
@@ -99,13 +99,13 @@ function parse(data) {
   var buf;
 
   if (this._parser.state === PARSER_WAITING_DATA_LEN) {
-    cursor = this._parser.lenReaded;
+    cursor = this._parser.lenRead;
     needed = 4 - cursor;
     toread = Math.min(data.length, needed);
 
     if (toread < needed) {
       this._parser.lenArr.push(data);
-      this._parser.lenReaded += data.length;
+      this._parser.lenRead += data.length;
       return;
     }
 
@@ -123,13 +123,13 @@ function parse(data) {
   }
 
   // parser state is: PARSER_WAITING_DATA
-  cursor = this._parser.dataReaded;
+  cursor = this._parser.dataRead;
   needed = this._parser.len - cursor;
   toread = Math.min(data.length, needed);
 
   if (toread < needed) {
     this._parser.dataArr.push(data);
-    this._parser.dataReaded += data.length;
+    this._parser.dataRead += data.length;
     return;
   }
 
