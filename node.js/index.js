@@ -28,8 +28,7 @@ Framer.prototype._reset = function () {
     dataArr: [],
     dataReaded: 0
   };
-
-}
+};
 
 Framer.pack = function(data, len) {
   var lenBuf = new Buffer(4);
@@ -66,7 +65,7 @@ Framer.pack = function(data, len) {
   dataArr.unshift(lenBuf);
 
   return Buffer.concat(dataArr, 4 + len);
-}
+};
 
 Framer.unpack = function(data) {
   var bufLen;
@@ -87,12 +86,11 @@ Framer.unpack = function(data) {
     throw new Error('Buffer is not contain all of data');
 
   return data;
-}
+};
 
 /**
  * Parser implementation
  */
-
 
 function parse(data) {
   var cursor;
