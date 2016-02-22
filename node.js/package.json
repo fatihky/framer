@@ -1,0 +1,26 @@
+{
+  "name": "framer-node",
+  "version": "0.0.1",
+  "description": "Framer node.js implementation.",
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {
+    "ava": "^0.12.0"
+  },
+  "scripts": {
+    "test": "ava"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fatihky/framer.git"
+  },
+  "keywords": [
+    "framer"
+  ],
+  "author": "Fatih Kaya <1994274@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/fatihky/framer/issues"
+  },
+  "homepage": "https://github.com/fatihky/framer#readme"
+}
