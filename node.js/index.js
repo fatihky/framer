@@ -112,7 +112,9 @@ function parse(data) {
     buf = data.slice(0, toread);
     data = data.slice(toread);
 
-    this._parser.lenArr.push(buf);
+    if (buf.length !== 4)
+      this._parser.lenArr.push(buf);
+
     if (this._parser.lenArr.length > 1)
       this._parser.len = Buffer.concat(this._parser.lenArr, 4).readUInt32LE(0);
     else
