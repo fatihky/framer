@@ -147,8 +147,19 @@ function parse(data) {
   this._reset();
 
   // recursive call if you need
-  if (data.length > 0)
-    process.nextTick(parse.bind(this, data));
+  if (data.length > 0) {
+    // do not wait next tick if call stack is small enough
+    this._f_call_stack_sz = this._f_call_stack_sz;
+    if (isNaN(this._f_call_stack_sz))
+      this._f_call_stack_sz = 0;
+    if (this._f_call_stack_sz++ < 10)
+      parse.call(this, data);
+    else {
+      this._f_call_stack_sz = 0;
+      process.nextTick(parse.bind(this, data));
+    }
+  } else
+    this._f_call_stack_sz = 0;
 }
 
 module.exports = Framer;
