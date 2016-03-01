@@ -20,7 +20,7 @@
   IN THE SOFTWARE.
 */
 
-#include <malloc.h>
+#include <stdlib.h>
 #include "fast.h"
 #include "err.h"
 #include "cbuf.h"

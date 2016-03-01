@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <time.h>
 #include <sys/time.h>
-#include <malloc.h>
+#include <stdlib.h>
 #include "framer.h"
 
 #define COUNT 50000000
@@ -12,7 +12,7 @@ static long long mstime()
 {
   struct timeval tv;
   long long mst;
-  
+
   gettimeofday(&tv, NULL);
   mst = ((long long)tv.tv_sec)*1000;
   mst += tv.tv_usec/1000;

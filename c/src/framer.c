@@ -20,7 +20,7 @@
   IN THE SOFTWARE.
 */
 
-#include <malloc.h>
+#include <stdlib.h>
 #include "err.h"
 #include "framer.h"
 
