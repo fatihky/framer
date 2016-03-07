@@ -54,10 +54,14 @@ struct frm_parser {
   struct frm_frame curr_frame;
 };
 
+typedef struct frm_frame *(*frm_frame_allocator_fn)();
+
 void frm_parser_init (struct frm_parser *self);
 void frm_parser_term (struct frm_parser *self);
 int frm_parser_parse (struct frm_parser *self, struct frm_cbuf *cbuf,
                                                             ssize_t nread);
+int frm_parser_parse_cust (struct frm_parser *self, struct frm_cbuf *cbuf,
+                            ssize_t nread, frm_frame_allocator_fn allocator);
 
 /*  Allocate new frame */
 struct frm_frame *frm_frame_new();

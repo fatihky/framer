@@ -34,7 +34,8 @@ void frm_parser_term (struct frm_parser *self) {
   frm_frame_term (&self->curr_frame);
 }
 
-int frm_parser_parse (struct frm_parser *self, struct frm_cbuf *cbuf, ssize_t nread)
+static int frm_parser_parse_general (struct frm_parser *self, struct frm_cbuf *cbuf,
+  ssize_t nread, frm_frame_allocator_fn allocator)
 {
   char *ptr = cbuf->buf;
   size_t remaining = nread; // buf->len;
@@ -96,7 +97,7 @@ int frm_parser_parse (struct frm_parser *self, struct frm_cbuf *cbuf, ssize_t nr
       ptr += len;
 
       if (frm_fast (curr_frame->cursor - 4 == curr_frame->size)) {
-        struct frm_frame *fr = frm_frame_new();
+        struct frm_frame *fr = allocator();
 
         if (frm_slow (fr == NULL))
           return ENOMEM;
@@ -120,4 +121,15 @@ int frm_parser_parse (struct frm_parser *self, struct frm_cbuf *cbuf, ssize_t nr
   }
 
   return 0;
+}
+
+int frm_parser_parse (struct frm_parser *self, struct frm_cbuf *cbuf, ssize_t nread)
+{
+  return frm_parser_parse_general (self, cbuf, nread, frm_frame_new);
+}
+
+int frm_parser_parse_cust (struct frm_parser *self, struct frm_cbuf *cbuf,
+  ssize_t nread, frm_frame_allocator_fn allocator)
+{
+  return frm_parser_parse_general (self, cbuf, nread, allocator);
 }
