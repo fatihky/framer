@@ -55,7 +55,7 @@ static int frm_parser_parse_general (struct frm_parser *self, struct frm_cbuf *c
       if (frm_fast (len == 4))
         curr_frame->size = * (uint32_t *)ptr;
       else
-        memcpy (&curr_frame->size + curr_frame->cursor, ptr, len);
+        memcpy ((unsigned char *)&curr_frame->size + curr_frame->cursor, ptr, len);
 
       curr_frame->cursor += len;
       remaining -= len;
