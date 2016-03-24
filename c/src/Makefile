@@ -1,5 +1,6 @@
-SOURCES=cbuf.c err.c frame.c framer.c list.c
+SOURCES=cbuf.c err.c frame.c frame-list.c framer.c list.c
 OBJS=$(patsubst %.c,%.o,$(SOURCES))
+CFLAGS=-std=gnu99 -g
 
 .PHONY: all
 

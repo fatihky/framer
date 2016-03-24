@@ -1,5 +1,6 @@
 /*
   Copyright (c) 2016 Fatih Kaya  All rights reserved.
+  Copyright (c) 2016 Bent Cardan  All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"),
@@ -43,6 +44,7 @@ void frm_frame_init (struct frm_frame *self)
   self->size = 0;
   self->buf = NULL;
   self->cursor = 0;
+  self->refcnt = 1;
   self->type = FRAMER_FRAME_EMPTY;
 
   frm_list_item_init (&self->item);
@@ -66,8 +68,23 @@ int frm_frame_set_data (struct frm_frame *self, char *data, uint32_t size)
   return 0;
 }
 
-void frm_frame_term (struct frm_frame *self)
+int frm_frame_ref (struct frm_frame *self)
 {
+  return __sync_fetch_and_add (&self->refcnt, 1) + 1;
+}
+
+int frm_frame_get_refcnt (struct frm_frame *self)
+{
+  return __sync_fetch_and_add (&self->refcnt, 0);
+}
+
+int frm_frame_term (struct frm_frame *self)
+{
+  frm_assert (frm_frame_get_refcnt (self) >= 1);
+
+  if (__sync_fetch_and_sub (&self->refcnt, 1) > 1)
+    return frm_frame_get_refcnt (self);
+
   frm_list_item_term (&self->item);
 
   if (frm_fast (self->type == FRAMER_FRAME_EMBEDDED))
@@ -75,6 +92,8 @@ void frm_frame_term (struct frm_frame *self)
 
   if (frm_fast (self->type == FRAMER_FRAME_ALLOCATED))
     free (self->buf);
+
+  return 0;
 }
 
 void frm_frame_destroy (struct frm_frame *self)
