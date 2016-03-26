@@ -58,7 +58,7 @@ int frm_frame_set_data (struct frm_frame *self, char *data, uint32_t size)
   self->buf = malloc (size);
 
   if (frm_slow (self->buf == NULL))
-    return ENOBUFS;
+    return ENOMEM;
 
   memcpy (self->buf, data, size);
 
