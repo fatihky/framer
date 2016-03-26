@@ -71,7 +71,9 @@ void frm_out_frame_list_item_set_frame (struct frm_out_frame_list_item *self,
 void frm_out_frame_list_item_term (struct frm_out_frame_list_item *self)
 {
   frm_list_item_term (&self->item);
-  // FIXME: terminate or unref() the frame
+
+  if (self->frame)
+    frm_frame_term (self->frame);
 }
 
 
