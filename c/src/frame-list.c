@@ -192,6 +192,8 @@ void frm_out_frame_list_written (struct frm_out_frame_list *self,
       item = frm_list_erase (&self->list, item);
       /*  FIXME: destroy frame here */
       self->out_index--;
+      /*  destroy out list item */
+      frm_out_frame_list_item_destroy (olitem);
     }
     else { // to_write > written
       olitem->frame->cursor += written;
