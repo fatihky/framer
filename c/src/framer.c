@@ -114,10 +114,8 @@ static int frm_parser_parse_general (struct frm_parser *self, struct frm_cbuf *c
       }
     }
 
-    if (frm_slow (remaining == 0)) {
-      frm_cbuf_unref (cbuf);
+    if (frm_slow (remaining == 0))
       break;
-    }
   }
 
   return 0;
