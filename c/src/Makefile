@@ -18,6 +18,14 @@ benchmark: ../bench/parser_bench
 ../bench/parser_bench: ../bench/parser_bench.c libframer.a
 	cc ../bench/parser_bench.c -o ../bench/parser_bench libframer.a -I. --std=gnu99
 
+.PHONY: install
+
+install: libframer.a
+	rm -rf /usr/include/framer
+	mkdir -p /usr/include/framer
+	cp *.h /usr/include/framer
+	cp libframer.a /usr/lib
+
 .PHONY: clean
 
 clean:
