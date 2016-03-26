@@ -26,6 +26,10 @@
 #include "frame-list.h"
 #include "cont.h"
 
+/*
+  TODO: store write cursor inside the list item.
+*/
+
 /*  allocate new object */
 struct frm_out_frame_list_item *frm_out_frame_list_item_new()
 {
@@ -58,6 +62,7 @@ void frm_out_frame_list_item_set_frame (struct frm_out_frame_list_item *self,
   struct frm_frame *frame)
 {
   self->frame = frame;
+  frm_frame_ref (frame);
 }
 
 /*  de-init the object and frame of the item.
