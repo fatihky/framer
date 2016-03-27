@@ -35,7 +35,7 @@ void frm_parser_term (struct frm_parser *self) {
 }
 
 static int frm_parser_parse_general (struct frm_parser *self, struct frm_cbuf *cbuf,
-  ssize_t nread, frm_frame_allocator_fn allocator)
+  ssize_t nread, frm_frame_allocator_fn allocator, struct frm_list *in_frames)
 {
   char *ptr = cbuf->buf;
   size_t remaining = nread; // buf->len;
@@ -107,7 +107,7 @@ static int frm_parser_parse_general (struct frm_parser *self, struct frm_cbuf *c
         fr->type = curr_frame->type;
         fr->cbuf = curr_frame->cbuf;
 
-        frm_list_insert (&self->in_frames, &fr->item,
+        frm_list_insert (in_frames, &fr->item,
                         frm_list_end (&self->in_frames));
 
         frm_frame_init (&self->curr_frame);
@@ -123,11 +123,18 @@ static int frm_parser_parse_general (struct frm_parser *self, struct frm_cbuf *c
 
 int frm_parser_parse (struct frm_parser *self, struct frm_cbuf *cbuf, ssize_t nread)
 {
-  return frm_parser_parse_general (self, cbuf, nread, frm_frame_new);
+  return frm_parser_parse_general (self, cbuf, nread, frm_frame_new,
+    &self->in_frames);
 }
 
 int frm_parser_parse_cust (struct frm_parser *self, struct frm_cbuf *cbuf,
-  ssize_t nread, frm_frame_allocator_fn allocator)
+  ssize_t nread, frm_frame_allocator_fn allocator, struct frm_list *in_frames)
 {
+  if (allocator == NULL)
+    allocator = frm_frame_new;
+
+  if (in_frames == NULL)
+    in_frames = &self->in_frames;
+
   return frm_parser_parse_general (self, cbuf, nread, allocator);
 }
