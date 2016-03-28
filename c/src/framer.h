@@ -29,6 +29,7 @@
 #include <stddef.h>
 #include "list.h"
 #include "cbuf.h"
+#include "frame-allocator.h"
 #include "frame-list.h"
 
 enum frm_frame_type {
@@ -58,20 +59,6 @@ struct frm_frame {
 struct frm_parser {
   struct frm_list in_frames;
   struct frm_frame curr_frame;
-};
-
-
-typedef struct frm_frame *(*frm_frame_allocator_fn)(void *data);
-typedef struct frm_frame *(*frm_frame_deallocator_fn)(void *data,
-  struct frm_frame *frame);
-
-struct frm_frame_allocator {
-  /*  frame allocator function */
-  frm_frame_allocator_fn alloc_fn;
-  /*  deallocator function */
-  frm_frame_deallocator_fn destroy_fn;
-  /*  user data */
-  void *data;
 };
 
 void frm_parser_init (struct frm_parser *self);
