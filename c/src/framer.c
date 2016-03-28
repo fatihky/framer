@@ -34,8 +34,9 @@ void frm_parser_term (struct frm_parser *self) {
   frm_frame_term (&self->curr_frame);
 }
 
-static int frm_parser_parse_general (struct frm_parser *self, struct frm_cbuf *cbuf,
-  ssize_t nread, frm_frame_allocator_fn allocator, struct frm_list *in_frames)
+static int frm_parser_parse_general (struct frm_parser *self,
+  struct frm_cbuf *cbuf, ssize_t nread, struct frm_frame_allocator *allocator,
+  struct frm_list *in_frames)
 {
   char *ptr = cbuf->buf;
   size_t remaining = nread; // buf->len;
@@ -55,7 +56,8 @@ static int frm_parser_parse_general (struct frm_parser *self, struct frm_cbuf *c
       if (frm_fast (len == 4))
         curr_frame->size = * (uint32_t *)ptr;
       else
-        memcpy ((unsigned char *)&curr_frame->size + curr_frame->cursor, ptr, len);
+        memcpy ((unsigned char *)&curr_frame->size + curr_frame->cursor, ptr,
+          len);
 
       curr_frame->cursor += len;
       remaining -= len;
@@ -97,7 +99,9 @@ static int frm_parser_parse_general (struct frm_parser *self, struct frm_cbuf *c
       ptr += len;
 
       if (frm_fast (curr_frame->cursor - 4 == curr_frame->size)) {
-        struct frm_frame *fr = allocator();
+        struct frm_frame *fr = allocator
+                               ? allocator->alloc_fn(allocator->data)
+                               : frm_frame_new();
 
         if (frm_slow (fr == NULL))
           return ENOMEM;
@@ -121,20 +125,18 @@ static int frm_parser_parse_general (struct frm_parser *self, struct frm_cbuf *c
   return 0;
 }
 
-int frm_parser_parse (struct frm_parser *self, struct frm_cbuf *cbuf, ssize_t nread)
+int frm_parser_parse (struct frm_parser *self, struct frm_cbuf *cbuf,
+  ssize_t nread)
 {
-  return frm_parser_parse_general (self, cbuf, nread, frm_frame_new,
-    &self->in_frames);
+  return frm_parser_parse_general (self, cbuf, nread, NULL, &self->in_frames);
 }
 
 int frm_parser_parse_cust (struct frm_parser *self, struct frm_cbuf *cbuf,
-  ssize_t nread, frm_frame_allocator_fn allocator, struct frm_list *in_frames)
+  ssize_t nread, struct frm_frame_allocator *allocator,
+  struct frm_list *in_frames)
 {
-  if (allocator == NULL)
-    allocator = frm_frame_new;
-
   if (in_frames == NULL)
     in_frames = &self->in_frames;
 
-  return frm_parser_parse_general (self, cbuf, nread, allocator);
+  return frm_parser_parse_general (self, cbuf, nread, allocator, in_frames);
 }

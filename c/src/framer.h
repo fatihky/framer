@@ -51,6 +51,8 @@ struct frm_frame {
   struct frm_cbuf *cbuf;
   /*  reference count */
   int refcnt;
+  /*  custom allocator */
+  struct frm_frame_allocator *allocator;
 };
 
 struct frm_parser {
@@ -58,15 +60,27 @@ struct frm_parser {
   struct frm_frame curr_frame;
 };
 
-typedef struct frm_frame *(*frm_frame_allocator_fn)();
+
+typedef struct frm_frame *(*frm_frame_allocator_fn)(void *data);
+typedef struct frm_frame *(*frm_frame_deallocator_fn)(void *data,
+  struct frm_frame *frame);
+
+struct frm_frame_allocator {
+  /*  frame allocator function */
+  frm_frame_allocator_fn alloc_fn;
+  /*  deallocator function */
+  frm_frame_deallocator_fn destroy_fn;
+  /*  user data */
+  void *data;
+};
 
 void frm_parser_init (struct frm_parser *self);
 void frm_parser_term (struct frm_parser *self);
 int frm_parser_parse (struct frm_parser *self, struct frm_cbuf *cbuf,
                                                             ssize_t nread);
 int frm_parser_parse_cust (struct frm_parser *self, struct frm_cbuf *cbuf,
-                            ssize_t nread, frm_frame_allocator_fn allocator,
-                            struct frm_list *in_frames);
+                           ssize_t nread, struct frm_frame_allocator *allocator,
+                           struct frm_list *in_frames);
 
 /*  Allocate new frame */
 struct frm_frame *frm_frame_new();
