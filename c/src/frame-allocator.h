@@ -27,8 +27,7 @@
 struct frm_frame;
 
 typedef struct frm_frame *(*frm_frame_allocator_fn)(void *data);
-typedef struct frm_frame *(*frm_frame_deallocator_fn)(void *data,
-  struct frm_frame *frame);
+typedef void (*frm_frame_deallocator_fn)(void *data, struct frm_frame *frame);
 
 struct frm_frame_allocator {
   /*  frame allocator function */
@@ -40,7 +39,7 @@ struct frm_frame_allocator {
 };
 
 void frm_frame_allocator_init (struct frm_frame_allocator *self,
-    frm_frame_allocator_fn alloc_fn, frm_frame_deallocator_fn destroy_fn);
+  frm_frame_allocator_fn alloc_fn, frm_frame_deallocator_fn destroy_fn);
 void frm_frame_allocator_term (struct frm_frame_allocator *self);
 
 #endif

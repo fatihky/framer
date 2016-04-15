@@ -29,6 +29,7 @@
 struct frm_out_frame_list_item {
   struct frm_list_item item;
   struct frm_frame *frame;
+  uint32_t cursor;
 };
 
 struct frm_out_frame_list {

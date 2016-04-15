@@ -26,10 +26,6 @@
 #include "frame-list.h"
 #include "cont.h"
 
-/*
-  TODO: store write cursor inside the list item.
-*/
-
 /*  allocate new object */
 struct frm_out_frame_list_item *frm_out_frame_list_item_new()
 {
@@ -56,6 +52,7 @@ void frm_out_frame_list_item_init (struct frm_out_frame_list_item *self)
 {
   frm_list_item_init (&self->item);
   self->frame = NULL;
+  self->cursor = 0;
 }
 
 void frm_out_frame_list_item_set_frame (struct frm_out_frame_list_item *self,
@@ -148,9 +145,9 @@ ssize_t frm_out_frame_list_get_iovs (struct frm_out_frame_list *self,
       struct frm_out_frame_list_item, item);
     struct frm_frame *frame = listItem->frame;
 
-    if (frame->cursor < 4) {
-      iovs[totiovs].iov_base = (char *)&frame->size + frame->cursor;
-      iovs[totiovs].iov_len = 4 - frame->cursor;
+    if (listItem->cursor < 4) {
+      iovs[totiovs].iov_base = (char *)&frame->size + listItem->cursor;
+      iovs[totiovs].iov_len = 4 - listItem->cursor;
       totsz += iovs[totiovs].iov_len;
       totiovs++;
     }
@@ -158,7 +155,7 @@ ssize_t frm_out_frame_list_get_iovs (struct frm_out_frame_list *self,
     if (totiovs >= iovcnt)
       break;
 
-    ssize_t len = frame->size - (frame->cursor > 4 ? frame->cursor - 4 : 0);
+    ssize_t len = frame->size - (listItem->cursor > 4 ? listItem->cursor - 4 : 0);
     ssize_t offset = frame->size > len ? frame->size - len : 0;
     iovs[totiovs].iov_base = (char *)frame->buf + offset;
     iovs[totiovs].iov_len = len;
@@ -186,7 +183,7 @@ void frm_out_frame_list_written (struct frm_out_frame_list *self,
     ssize_t must_written;
 
     olitem = frm_cont (item, struct frm_out_frame_list_item, item);
-    must_written = (olitem->frame->size + 4) - olitem->frame->cursor;
+    must_written = (olitem->frame->size + 4) - olitem->cursor;
 
     if (must_written <= written) {
       written -= must_written;
@@ -198,7 +195,7 @@ void frm_out_frame_list_written (struct frm_out_frame_list *self,
       frm_out_frame_list_item_destroy (olitem);
     }
     else { // to_write > written
-      olitem->frame->cursor += written;
+      olitem->cursor += written;
       break;
     }
 
