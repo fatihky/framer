@@ -92,9 +92,6 @@ int frm_frame_get_refcnt (struct frm_frame *self);
     @returns 0 if frame's data terminated, or reference count of the frame. */
 int frm_frame_term (struct frm_frame *self);
 
-/*  Deallocate frame */
-void frm_frame_destroy (struct frm_frame *self);
-
 /*  Get total length(frame header + frame data) of frame */
 size_t frm_frame_totlen (struct frm_frame *self);
 

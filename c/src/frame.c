@@ -93,14 +93,10 @@ int frm_frame_term (struct frm_frame *self)
   if (frm_fast (self->type == FRAMER_FRAME_ALLOCATED))
     free (self->buf);
 
+  if (self->allocator && self->allocator->destroy_fn)
+    self->allocator->destroy_fn (self->allocator->data, self);
+
   return 0;
-}
-
-void frm_frame_destroy (struct frm_frame *self)
-{
-  frm_frame_term (self);
-
-  free (self);
 }
 
 size_t frm_frame_totlen (struct frm_frame *self)
