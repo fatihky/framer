@@ -169,15 +169,15 @@ ssize_t frm_out_frame_list_get_iovs (struct frm_out_frame_list *self,
 }
 
 /*  set written bytes */
-void frm_out_frame_list_written (struct frm_out_frame_list *self,
+int frm_out_frame_list_written (struct frm_out_frame_list *self,
   ssize_t written_)
 {
+  int removed = 0;
   ssize_t written = written_;
   struct frm_list_item *item;
 
   item = frm_list_begin (&self->list);
   while (item && written > 0) {
-
     /* out list item */
     struct frm_out_frame_list_item *olitem;
     ssize_t must_written;
@@ -193,6 +193,7 @@ void frm_out_frame_list_written (struct frm_out_frame_list *self,
       self->out_index--;
       /*  destroy out list item */
       frm_out_frame_list_item_destroy (olitem);
+      removed++;
     }
     else { // to_write > written
       olitem->cursor += written;
@@ -201,4 +202,6 @@ void frm_out_frame_list_written (struct frm_out_frame_list *self,
 
     item = frm_list_begin (&self->list);
   }
+
+  return removed;
 }

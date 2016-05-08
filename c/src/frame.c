@@ -46,6 +46,7 @@ void frm_frame_init (struct frm_frame *self)
   self->cursor = 0;
   self->refcnt = 1;
   self->type = FRAMER_FRAME_EMPTY;
+  self->allocator = NULL;
 
   frm_list_item_init (&self->item);
 }

@@ -85,7 +85,7 @@ ssize_t frm_out_frame_list_get_iovs (struct frm_out_frame_list *self,
     struct iovec *iovs, int iovcnt, int *retiovcnt);
 
 /*  set written bytes */
-void frm_out_frame_list_written (struct frm_out_frame_list *self,
+int frm_out_frame_list_written (struct frm_out_frame_list *self,
   ssize_t written);
 
 #endif
