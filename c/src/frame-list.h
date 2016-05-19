@@ -84,6 +84,10 @@ void frm_out_frame_list_insert (struct frm_out_frame_list *self,
 ssize_t frm_out_frame_list_get_iovs (struct frm_out_frame_list *self,
     struct iovec *iovs, int iovcnt, int *retiovcnt);
 
+/*  reset out_frames property. use this method if you get
+    EAGAIN or EWOULDBLOCK from writev. */
+void frm_out_frame_list_reset_out_index (struct frm_out_frame_list *self);
+
 /*  set written bytes */
 int frm_out_frame_list_written (struct frm_out_frame_list *self,
   ssize_t written);
