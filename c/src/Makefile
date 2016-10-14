@@ -1,6 +1,6 @@
 SOURCES=cbuf.c err.c frame.c frame-allocator.c frame-list.c framer.c list.c
 OBJS=$(patsubst %.c,%.o,$(SOURCES))
-CFLAGS=-std=gnu99 -g -fPIC
+CFLAGS=-std=gnu99 -g -fPIC -O2
 
 .PHONY: all
 
@@ -16,7 +16,7 @@ $(OBJS): framer.h
 benchmark: ../bench/parser_bench
 
 ../bench/parser_bench: ../bench/parser_bench.c libframer.a
-	cc ../bench/parser_bench.c -o ../bench/parser_bench libframer.a -I. --std=gnu99
+	cc ../bench/parser_bench.c -o ../bench/parser_bench libframer.a -I. --std=gnu99 -O2
 
 .PHONY: install
 
